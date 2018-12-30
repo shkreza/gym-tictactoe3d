@@ -2,6 +2,9 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 
+class TicTacToeEnvKeys:
+  KW_ENFORCE_ROUNDS = 'enforce_rounds'
+
 class TicTacToeEnv(gym.Env):
   """
   TicTacToe environment:
@@ -19,11 +22,13 @@ class TicTacToeEnv(gym.Env):
   _WORLDSIZE = _DIM_SIZE ** 3
   _MAX_ROUND = 3 * 3 * 3
 
-  def __init__(self):
-    print('You instantiated a new TicTacToe environment')
+  def __init__(self, **kwargs):
     self._round = 0
     self._world = [[[self._get_empty(b, c, r) for r in range(TicTacToeEnv._DIM_SIZE)] for c in range(TicTacToeEnv._DIM_SIZE)] for b in range(TicTacToeEnv._DIM_SIZE)]
     self._done = True
+    self.enforce_rounds = True
+    if kwargs:
+      self.enforce_rounds = kwargs[TicTacToeEnvKeys.KW_ENFORCE_ROUNDS] if TicTacToeEnvKeys.KW_ENFORCE_ROUNDS in kwargs else False
   
   def _get_empty(self, b, c, r):
     return TicTacToeEnv._EMPTY
@@ -36,7 +41,7 @@ class TicTacToeEnv(gym.Env):
     if self._done:
       raise ValueError('Game has ended')
     
-    if player != TicTacToeEnv._PLAYERS[self._round % TicTacToeEnv._PLAYERS_COUNT]:
+    if self.enforce_rounds and player != TicTacToeEnv._PLAYERS[self._round % TicTacToeEnv._PLAYERS_COUNT]:
       raise ValueError('This is not {}\'s turn'.format(player))
 
     if self._world[b][c][r] != TicTacToeEnv._EMPTY:
@@ -50,7 +55,6 @@ class TicTacToeEnv(gym.Env):
     return None, 1 if self._done else 0, self._done, {'round': self._round, 'next_player': 'NONE' if self._done else TicTacToeEnv._PLAYERS[self._round%TicTacToeEnv._PLAYERS_COUNT]}
 
   def reset(self):
-    print('Resetting ...')
     self._round = 0
     self._world = [[[self._get_empty(b, c, r) for r in range(TicTacToeEnv._DIM_SIZE)] for c in range(TicTacToeEnv._DIM_SIZE)] for b in range(TicTacToeEnv._DIM_SIZE)]
     self._done = False
@@ -133,4 +137,20 @@ class TicTacToeEnv(gym.Env):
         return True
 
       if self._check_indices((0, c, 2), (1, c, 1), (2, c, 0)):
+        return True
+    
+    # Diagonal 1
+    if self._check_indices((0, 0, 0), (1, 1, 1), (2, 2, 2)):
+        return True
+
+    # Diagonal 2
+    if self._check_indices((0, 2, 0), (1, 1, 1), (2, 0, 2)):
+        return True
+
+    # Diagonal 3
+    if self._check_indices((0, 0, 2), (1, 1, 1), (2, 2, 0)):
+        return True
+
+    # Diagonal 4
+    if self._check_indices((0, 2, 2), (1, 1, 1), (2, 0, 0)):
         return True
