@@ -52,12 +52,18 @@ class TicTacToeEnv(gym.Env):
       self._world[b][c][r] = player
       self._round += 1
       
-      self._done = self._check()
+      self._done = self._check() is not None
 
     return self._world, 1 if self._done else 0, self._done, {'round': self._round, 'next_player': 'NONE' if self._done else (self._round%TicTacToeEnv._PLAYERS_COUNT)+1}
 
-  def get_as_char(self, val):
-    return TicTacToeEnv._PLAYERS[val]
+  def get_as_char(self, b, c, r, winning_seq=None):
+    val = self._world[b][c][r]
+    ret = TicTacToeEnv._PLAYERS[val]
+
+    if winning_seq and (b,c,r) in winning_seq:
+      return ret.upper()
+    else:
+      return ret
 
   def reset(self):
     self._round = 0
@@ -66,10 +72,12 @@ class TicTacToeEnv(gym.Env):
     return self._world
 
   def render(self, mode='compact', close=False):
+    winning_seq = self._check() if self._done else None
+
     for r in range(3):
       for b in range(3):
         for c in range(3):
-            print(self.get_as_char(self._world[b][c][r]), end=' ')
+            print(self.get_as_char(b, c, r, winning_seq=winning_seq), end=' ')
         print('   ', end='')
       print()
 
@@ -96,67 +104,69 @@ class TicTacToeEnv(gym.Env):
       # Check each column
       for c in range(3):
         if self._check_indices((b, c, 0), (b, c, 1), (b, c, 2)):
-          return True
+          return sorted([(b, c, 0), (b, c, 1), (b, c, 2)])
 
       # Check each row
       for r in range(3):
         if self._check_indices((b, 0, r), (b, 1, r), (b, 2, r)):
-          return True
+          return sorted([(b, 0, r), (b, 1, r), (b, 2, r)])
 
       if self._check_indices((b, 0, 0), (b, 1, 1), (b, 2, 2)):
-        return True
+        return sorted([(b, 0, 0), (b, 1, 1), (b, 2, 2)])
 
       if self._check_indices((b, 0, 2), (b, 1, 1), (b, 2, 0)):
-        return True
+        return sorted([(b, 0, 2), (b, 1, 1), (b, 2, 0)])
 
     # For each row
     for r in range(3):
       # Check each column
       for c in range(3):
         if self._check_indices((0, c, r), (1, c, r), (2, c, r)):
-          return True
+          return sorted([(0, c, r), (1, c, r), (2, c, r)])
 
       # Check each block
       for b in range(3):
         if self._check_indices((b, 0, r), (b, 1, r), (b, 2, r)):
-          return True
+          return sorted([(b, 0, r), (b, 1, r), (b, 2, r)])
 
       if self._check_indices((0, 0, r), (1, 1, r), (2, 2, r)):
-        return True
+        return sorted([(0, 0, r), (1, 1, r), (2, 2, r)])
 
       if self._check_indices((2, 0, r), (1, 1, r), (0, 2, r)):
-        return True
+        return sorted([(2, 0, r), (1, 1, r), (0, 2, r)])
 
     # For each column
     for c in range(3):
       # Check each block
       for b in range(3):
         if self._check_indices((b, c, 0), (b, c, 1), (b, c, 2)):
-          return True
+          return sorted([(b, c, 0), (b, c, 1), (b, c, 2)])
 
       # Check each row
       for r in range(3):
         if self._check_indices((0, c, r), (1, c, r), (2, c, r)):
-          return True
+          return sorted([(0, c, r), (1, c, r), (2, c, r)])
 
       if self._check_indices((0, c, 0), (1, c, 1), (2, c, 2)):
-        return True
+        return sorted([(0, c, 0), (1, c, 1), (2, c, 2)])
 
       if self._check_indices((0, c, 2), (1, c, 1), (2, c, 0)):
-        return True
+        return sorted([(0, c, 2), (1, c, 1), (2, c, 0)])
     
     # Diagonal 1
     if self._check_indices((0, 0, 0), (1, 1, 1), (2, 2, 2)):
-        return True
+        return sorted([(0, 0, 0), (1, 1, 1), (2, 2, 2)])
 
     # Diagonal 2
     if self._check_indices((0, 2, 0), (1, 1, 1), (2, 0, 2)):
-        return True
+        return sorted([(0, 2, 0), (1, 1, 1), (2, 0, 2)])
 
     # Diagonal 3
     if self._check_indices((0, 0, 2), (1, 1, 1), (2, 2, 0)):
-        return True
+        return sorted([(0, 0, 2), (1, 1, 1), (2, 2, 0)])
 
     # Diagonal 4
     if self._check_indices((0, 2, 2), (1, 1, 1), (2, 0, 0)):
-        return True
+        return sorted([(0, 2, 2), (1, 1, 1), (2, 0, 0)])
+    
+    return None
