@@ -16,8 +16,8 @@ class TicTacToeEnv(gym.Env):
   _EMPTY = '-'
   _X = 'x'
   _O = 'o'
-  _PLAYERS = [_X, _O]
-  _PLAYERS_COUNT = len(_PLAYERS)
+  _PLAYERS = [_EMPTY, _X, _O]
+  _PLAYERS_COUNT = 2
   _DIM_SIZE = 3
   _WORLDSIZE = _DIM_SIZE ** 3
   _MAX_ROUND = 3 * 3 * 3
@@ -31,45 +31,51 @@ class TicTacToeEnv(gym.Env):
       self.enforce_rounds = kwargs[TicTacToeEnvKeys.KW_ENFORCE_ROUNDS] if TicTacToeEnvKeys.KW_ENFORCE_ROUNDS in kwargs else False
   
   def _get_empty(self, b, c, r):
-    return TicTacToeEnv._EMPTY
+    return 0
 
   def step(self, action):
-    if len(action) != 4:
-      raise ValueError('Bad action')
+    # Play the game only if action is not None
+    if action:
+      if len(action) != 4:
+        raise ValueError('Bad action')
 
-    player, b, c, r = action[0], int(action[1]), int(action[2]), int(action[3])
-    if self._done:
-      raise ValueError('Game has ended')
-    
-    if self.enforce_rounds and player != TicTacToeEnv._PLAYERS[self._round % TicTacToeEnv._PLAYERS_COUNT]:
-      raise ValueError('This is not {}\'s turn'.format(player))
+      player, b, c, r = int(action[0]), int(action[1]), int(action[2]), int(action[3])
+      if self._done:
+        raise ValueError('Game has ended')
+      
+      if self.enforce_rounds and player != (self._round % TicTacToeEnv._PLAYERS_COUNT) + 1:
+        raise ValueError('This is not {}\'s turn'.format(player))
 
-    if self._world[b][c][r] != TicTacToeEnv._EMPTY:
-      raise ValueError('Cell is used')
-    
-    self._world[b][c][r] = player
-    self._round += 1
+      if self._world[b][c][r] != 0:
+        raise ValueError('Cell is used')
+      
+      self._world[b][c][r] = player
+      self._round += 1
+      
+      self._done = self._check()
 
-    self._done = self._check()
+    return self._world, 1 if self._done else 0, self._done, {'round': self._round, 'next_player': 'NONE' if self._done else (self._round%TicTacToeEnv._PLAYERS_COUNT)+1}
 
-    return None, 1 if self._done else 0, self._done, {'round': self._round, 'next_player': 'NONE' if self._done else TicTacToeEnv._PLAYERS[self._round%TicTacToeEnv._PLAYERS_COUNT]}
+  def get_as_char(self, val):
+    return TicTacToeEnv._PLAYERS[val]
 
   def reset(self):
     self._round = 0
     self._world = [[[self._get_empty(b, c, r) for r in range(TicTacToeEnv._DIM_SIZE)] for c in range(TicTacToeEnv._DIM_SIZE)] for b in range(TicTacToeEnv._DIM_SIZE)]
     self._done = False
+    return self._world
 
   def render(self, mode='compact', close=False):
     for r in range(3):
       for b in range(3):
         for c in range(3):
-            print(self._world[b][c][r], end=' ')
+            print(self.get_as_char(self._world[b][c][r]), end=' ')
         print('   ', end='')
       print()
 
   def _check_indices(self, index1, index2, index3):
     a = self._world[index1[0]][index1[1]][index1[2]]
-    if a not in TicTacToeEnv._PLAYERS:
+    if a == 0:
       return False
 
     b = self._world[index2[0]][index2[1]][index2[2]]

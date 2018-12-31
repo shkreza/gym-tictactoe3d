@@ -1,4 +1,4 @@
-# TiC Tac Toe Game in OpenAI Gym
+# Tic Tac Toe Game in OpenAI Gym
 The 3D version of Tic Tac Toe
 
 ## Install
@@ -17,7 +17,7 @@ import gym_tictactoe
 def play_game(actions, step_fn=input, **kwargs):
   env = gym.make('tictactoe-v0')
   env.reset()
-
+  
   # Play actions in action profile
   for action in actions:
     print(env.step(action, **kwargs))
