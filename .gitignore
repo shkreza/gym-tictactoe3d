@@ -3,3 +3,6 @@ build
 dist
 gym_tictactoe.egg-info
 **/__pycache__/**
+**/logs/**
+.vscode
+**/.ipynb_checkpoints/**
