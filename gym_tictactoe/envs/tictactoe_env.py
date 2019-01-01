@@ -45,16 +45,19 @@ class TicTacToeEnv(gym.Env):
       
       if self.enforce_rounds and player != (self._round % TicTacToeEnv._PLAYERS_COUNT) + 1:
         raise ValueError('This is not {}\'s turn'.format(player))
-
-      if self._world[b][c][r] != 0:
-        raise ValueError('Cell is used')
       
-      self._world[b][c][r] = player
       self._round += 1
       
-      self._done = self._check() is not None
+      if self._world[b][c][r] != 0:
+        # If cell is in use, end game with reward of -1
+        self._done = True
+        info = { 'round': self._round, 'next_player': 'NONE', 'error': 'Played occupied cell' }
+        return self._world, -1, self._done, info
 
-    return self._world, 1 if self._done else 0, self._done, {'round': self._round, 'next_player': 'NONE' if self._done else (self._round%TicTacToeEnv._PLAYERS_COUNT)+1}
+      self._world[b][c][r] = player
+      self._done = (self._check() is not None) or (self._round == TicTacToeEnv._MAX_ROUND)
+      info = { 'round': self._round, 'next_player': 'NONE' if self._done else (self._round%TicTacToeEnv._PLAYERS_COUNT)+1 }
+      return self._world, 1 if self._done else 0, self._done, info
 
   def get_as_char(self, b, c, r, winning_seq=None):
     val = self._world[b][c][r]

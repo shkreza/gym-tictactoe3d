@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='gym-tictactoe',
-     version='0.18',
+     version='0.20',
      scripts=['sayhi'] ,
      author="Reza Sherafat",
      author_email="sherafat.us@gmail.com",
