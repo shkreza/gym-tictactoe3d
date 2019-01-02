@@ -6,3 +6,4 @@ gym_tictactoe.egg-info
 **/logs/**
 .vscode
 **/.ipynb_checkpoints/**
+**/*.ckpt*

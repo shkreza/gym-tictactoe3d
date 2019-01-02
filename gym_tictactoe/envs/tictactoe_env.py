@@ -37,7 +37,7 @@ class TicTacToeEnv(gym.Env):
     # Play the game only if action is not None
     if action:
       if len(action) != 4:
-        raise ValueError('Bad action')
+        raise ValueError('Bad action: {}'.format(action))
 
       player, b, c, r = int(action[0]), int(action[1]), int(action[2]), int(action[3])
       if self._done:
