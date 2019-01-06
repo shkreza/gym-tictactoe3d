@@ -3,11 +3,17 @@
 import gym
 import gym_tictactoe
 
-def play_game(actions, step_fn=None, enforce_rounds=True):
-  if enforce_rounds:
-    env = gym.make('tictactoe-v0')
+def play_game(actions, step_fn=None, enforce_rounds=True, plot=False):
+  if plot:
+    if enforce_rounds:
+      env = gym.make('tictactoe-plt-v0')
+    else:
+      env = gym.make('tictactoe-plt-test-v0')
   else:
-    env = gym.make('tictactoe-test-v0')
+    if enforce_rounds:
+      env = gym.make('tictactoe-v0')
+    else:
+      env = gym.make('tictactoe-test-v0')
   env.reset()
   env.render()
   
@@ -74,12 +80,14 @@ for actions in game_actions_ignore_rounds:
   if new_action in dup_detector:
     raise ValueError('Duplicate action:', actions)
   dup_detector.add(new_action)
-  total_reward, done = play_game(actions, enforce_rounds=False)
+  total_reward, done = play_game(actions, enforce_rounds=False, plot=True)
+  _ = input()
   assert done == True
 
 print('Checked {} combinations'.format(len(dup_detector)))
 
 for actions in game_actions_enforce_rounds:
   print('*'*10, 'New game')
-  total_reward, done = play_game(actions)
+  total_reward, done = play_game(actions, plot=True)
+  _ = input()
   assert done == True
