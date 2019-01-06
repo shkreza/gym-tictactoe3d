@@ -4,7 +4,7 @@ The 3D version of Tic Tac Toe is implemented as an OpenAI's Gym environment. The
 ## Complexity
 The traditional (2D) Tic Tac Toe has a very small game space (9^3). In comparison, the 3D version in this repo has a much larger space which is in the order of 81^3. This makes computer-based players using search and pruning techniques of the game space prohibitively expensive.
 
-Rather, the current learning models are based on policy gradient and deep Q-learning. The DQN model has produced very promising results. Feel free to experience on your own and contribute if interested. The PG-based model needs more work :)
+Rather, the current learning models are based on policy gradient and deep Q-learning. The [DQN model](learning/TicTacToe-RL-DQN-TF-v2.ipynb) has produced very promising results. Feel free to experience on your own and contribute if interested. The [PG-based model](learning/TicTacToe-RL-PG-TF.ipynb) needs more work :)
 
 ## Contributions
 The repo is also open for pull requests and collaborations both in game development as well as learning.
