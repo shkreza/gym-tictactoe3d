@@ -1,5 +1,13 @@
 # Tic Tac Toe Game in OpenAI Gym
-The 3D version of Tic Tac Toe
+The 3D version of Tic Tac Toe is implemented as an OpenAI's Gym environment. The [`learning`](./learning) folder includes several Jupyter notebooks for deep neural network models used to implement a computer-based player.
+
+## Complexity
+The traditional (2D) Tic Tac Toe has a very small game space (9^3). In comparison, the 3D version in this repo has a much larger space which is in the order of 81^3. This makes computer-based players using search and pruning techniques of the game space prohibitively expensive.
+
+Rather, the current learning models are based on policy gradient and deep Q-learning. The DQN model has produced very promising results. Feel free to experience on your own and contribute if interested. The PG-based model needs more work :)
+
+## Contributions
+The repo is also open for pull requests and collaborations both in game development as well as learning.
 
 ## Dependencies
 - Base dependency: `gym`.
