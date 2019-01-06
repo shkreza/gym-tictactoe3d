@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='gym-tictactoe',
-     version='0.28',
-     scripts=['sayhi'] ,
+     version='0.30',
+     scripts=[] ,
      author="Reza Sherafat",
      author_email="sherafat.us@gmail.com",
      description="Tic-Tac-Toe environment in OpenAI gym",
