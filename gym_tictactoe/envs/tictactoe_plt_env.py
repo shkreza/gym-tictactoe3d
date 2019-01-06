@@ -11,6 +11,8 @@ class TicTacToePltEnv(TicTacToeEnv):
   _PLOT_RANGE = [0, 1, 2]
   _GRID = [[[(i,j,k) for i in range(3)] for j in range(3)] for k in range(3)]
   _GRID = np.array(_GRID).flatten()
+
+  _FONT_SIZE = 7
   _Z_GRID = np.array(_GRID).flatten()[2::3]
   _Y_GRID = np.array(_GRID).flatten()[1::3]
   _X_GRID = np.array(_GRID).flatten()[0::3]
@@ -41,8 +43,11 @@ class TicTacToePltEnv(TicTacToeEnv):
                 c=TicTacToePltEnv._COLORS[player],
                 marker=TicTacToePltEnv._MARKERS[player],
                 s=TicTacToePltEnv._MARKER_SIZE)
+    
+    ax.scatter(TicTacToePltEnv._X_GRID, TicTacToePltEnv._Y_GRID, TicTacToePltEnv._Z_GRID, c='b', marker='+', s=1)
+    for xyz in zip(TicTacToePltEnv._X_GRID, TicTacToePltEnv._Y_GRID, TicTacToePltEnv._Z_GRID):
+      ax.text(xyz[0], xyz[1], xyz[2], '  {}{}{}'.format(xyz[0], xyz[1], xyz[2]), size=TicTacToePltEnv._FONT_SIZE)
 
-    ax.scatter(TicTacToePltEnv._X_GRID, TicTacToePltEnv._Y_GRID, TicTacToePltEnv._Z_GRID, c='r', marker='.')
 
   def _prepare_fig(self):
     # Reclaim previous memory
