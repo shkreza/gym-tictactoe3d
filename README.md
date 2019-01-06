@@ -1,4 +1,4 @@
-# Tic Tac Toe Game in OpenAI Gym
+# 3D Tic Tac Toe Game in OpenAI Gym
 The 3D version of Tic Tac Toe is implemented as an OpenAI's Gym environment. The [`learning`](./learning) folder includes several Jupyter notebooks for deep neural network models used to implement a computer-based player.
 
 ## Complexity
