@@ -19,8 +19,9 @@ class TicTacToePltEnv(TicTacToeEnv):
     super().__init__(**kwargs)
 
     self._show_axes = show_axes
-    self._release_figures = True
+    self._close_previous_figure_before_render = True
     self._fig = None
+    self._ax = None
   
   def _render_player(self, ax, np_obs, player):
     marker = TicTacToePltEnv._MARKERS[player]
@@ -45,30 +46,31 @@ class TicTacToePltEnv(TicTacToeEnv):
 
   def _prepare_fig(self):
     # Reclaim previous memory
-    if self._release_figures and self._fig:
-      plt.close(self._fig)
+    if self._close_previous_figure_before_render:
+      plt.close()
+      self._fig = None
     
-    self._fig = plt.figure()
-
-    ax = self._fig.add_subplot(111, projection='3d')
-    ax.view_init(azim=125, elev=20)
+    if not self._fig:
+      self._fig = plt.figure()
+      self._ax = self._fig.add_subplot(111, projection='3d')
+    self._ax.view_init(azim=125, elev=20)
     if not self._show_axes:
-      ax.set_axis_off()
+      self._ax.set_axis_off()
 
-    ax.set_xlim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
-    ax.set_xticks(TicTacToePltEnv._PLOT_RANGE)
+    self._ax.set_xlim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
+    self._ax.set_xticks(TicTacToePltEnv._PLOT_RANGE)
 
-    ax.set_ylim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
-    ax.set_yticks(TicTacToePltEnv._PLOT_RANGE)
+    self._ax.set_ylim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
+    self._ax.set_yticks(TicTacToePltEnv._PLOT_RANGE)
 
-    ax.set_zlim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
-    ax.set_zticks(TicTacToePltEnv._PLOT_RANGE)
-    for t in ax.zaxis.get_major_ticks(): t.label.set_fontsize(10)
+    self._ax.set_zlim(min(TicTacToePltEnv._PLOT_RANGE), max(TicTacToePltEnv._PLOT_RANGE))
+    self._ax.set_zticks(TicTacToePltEnv._PLOT_RANGE)
+    for t in self._ax.zaxis.get_major_ticks(): t.label.set_fontsize(10)
     
-    return ax
+    return self._ax
   
   def _display_fig(self):
-    self._fig.show()
+    plt.show(block=False)
     
   def render(self):
     ax = self._prepare_fig()
