@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='gym-tictactoe',
-     version='0.22',
+     version='0.23',
      scripts=['sayhi'] ,
      author="Reza Sherafat",
      author_email="sherafat.us@gmail.com",
@@ -19,5 +19,5 @@ setuptools.setup(
          "License :: OSI Approved :: MIT License",
          "Operating System :: OS Independent",
      ],
-     install_requires=['gym','maplotlib','numpy','mpl_toolkits'],
+     install_requires=['gym','matplotlib','numpy'],
  )

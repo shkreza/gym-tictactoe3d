@@ -19,6 +19,7 @@ class TicTacToePltEnv(TicTacToeEnv):
     super().__init__(**kwargs)
 
     self._show_axes = show_axes
+    self._release_figures = True
     self._fig = None
   
   def _render_player(self, ax, np_obs, player):
@@ -44,7 +45,7 @@ class TicTacToePltEnv(TicTacToeEnv):
 
   def _prepare_fig(self):
     # Reclaim previous memory
-    if self._fig:
+    if self._release_figures and self._fig:
       plt.close(self._fig)
     
     self._fig = plt.figure()
